@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>W4D4_Task2</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe4f0;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #15803d;
+      --success-bg: #effdf5;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 180px);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      line-height: 1.15;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      background: #eff6ff;
+      color: var(--primary-dark);
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .question-header {
+      margin-bottom: 12px;
+    }
+
+    .question-number {
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-size: 0.96rem;
+    }
+
+    .question-text {
+      font-size: 1.06rem;
+      margin: 0 0 16px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fafcff;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+      min-height: 52px;
+    }
+
+    .option-label:hover {
+      border-color: #93c5fd;
+      background: #f0f7ff;
+    }
+
+    .option-label:active {
+      transform: scale(0.995);
+    }
+
+    .option-label input {
+      accent-color: var(--primary);
+      transform: scale(1.15);
+      flex: 0 0 auto;
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 0.97rem;
+      font-weight: 600;
+    }
+
+    .feedback.correct {
+      display: block;
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .feedback.incorrect {
+      display: block;
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .support-tools {
+      display: none;
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 14px;
+      background: #f8fafc;
+    }
+
+    .support-tools.show {
+      display: block;
+    }
+
+    .support-tools h4 {
+      margin: 0 0 10px;
+      font-size: 0.98rem;
+      color: #334155;
+    }
+
+    .audio-box {
+      margin-bottom: 12px;
+    }
+
+    audio {
+      width: 100%;
+    }
+
+    .toggle-btn,
+    .submit-btn {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    .toggle-btn {
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+    }
+
+    .toggle-btn:hover {
+      background: #cbd5e1;
+    }
+
+    .submit-wrap {
+      position: sticky;
+      bottom: 12px;
+      z-index: 10;
+      margin-top: 10px;
+    }
+
+    .submit-bar {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 20px;
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .submit-btn {
+      background: var(--primary);
+      color: white;
+      padding: 14px 24px;
+      font-size: 1rem;
+      min-width: 220px;
+    }
+
+    .submit-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .submit-btn:active,
+    .toggle-btn:active {
+      transform: scale(0.99);
+    }
+
+    .results {
+      display: none;
+      margin-top: 24px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .results.show {
+      display: block;
+    }
+
+    .results h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .score-card {
+      background: #f8fbff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .score-card .label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+
+    .score-card .value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .summary-note {
+      margin-top: 14px;
+      color: var(--muted);
+    }
+
+    .transcript {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid var(--line);
+      color: #334155;
+    }
+
+    .transcript.show {
+      display: block;
+    }
+
+    .transcript strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    .transcript-content {
+      white-space: pre-line;
+    }
+
+    .status-pill {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .status-pill.correct {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-pill.incorrect {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    @media (max-width: 640px) {
+      .submit-btn {
+        width: 100%;
+      }
+
+      .hero,
+      .question-card,
+      .results {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>W4D4_Task2</h1>
+      <p>Listen to each audio clip and decide whether the statement is <strong>True</strong> or <strong>False</strong>.</p>
+      <div class="meta">5 Questions • Separate audio clips</div>
+    </section>
+
+    <main id="quiz"></main>
+
+    <div class="submit-wrap">
+      <div class="submit-bar">
+        <button id="submitBtn" class="submit-btn" type="button">Submit Answers</button>
+      </div>
+    </div>
+
+    <section id="results" class="results" aria-live="polite">
+      <h2>Your Results</h2>
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="label">Score</div>
+          <div id="scoreValue" class="value">0 / 5</div>
+        </div>
+        <div class="score-card">
+          <div class="label">Percentage</div>
+          <div id="percentValue" class="value">0%</div>
+        </div>
+      </div>
+      <p id="summaryNote" class="summary-note"></p>
+    </section>
+  </div>
+
+  <script>
+    const listeningData = {
+      title: "W4D4_Task2",
+      instructions: "Listen and decide whether each statement is True or False.",
+      questions: [
+        {
+          id: 1,
+          type: "truefalse",
+          audio: "Q1.mp3",
+          question: "Leo believes it's important to sometimes keep unflattering photos online to stay authentic.",
+          correctAnswer: "True",
+          timeRange: { start: "00:01:00", end: "00:01:25" },
+          transcript: `I agree with the principle, Sam, but I think the how matters A lot. Is it a close friend or just an acquaintance? Publicly commenting might be embarrassing to them. A private message is always better. But I also wonder, by constantly curating our image, are we losing authenticity? Maybe sometimes we just have to laugh at ourselves.`,
+          feedback: {
+            correct: "Correct. Leo suggests that constantly curating our image may reduce authenticity, so sometimes we should laugh at ourselves.",
+            incorrect: "Not quite. Leo does suggest that sometimes people should accept unflattering photos instead of always curating their image."
+          }
+        },
+        {
+          id: 2,
+          type: "truefalse",
+          audio: "Q2.mp3",
+          question: "Sam thinks asking a friend to remove a bad photo is mostly about caring how you look.",
+          correctAnswer: "False",
+          timeRange: { start: "00:01:25", end: "00:01:48" },
+          transcript: `Authenticity is one thing, Leo, but control is another. I choose what I present to the world. That photo might be harmless to them, but what if a future employer sees it and gets the wrong idea? It's not about vanity, it's about managing your reputation. The ethical rule is simple. Ask before you post about others.`,
+          feedback: {
+            correct: "Correct. Sam says it is not about vanity; it is about reputation and control over your image.",
+            incorrect: "Not quite. Sam explicitly says it is not about vanity."
+          }
+        },
+        {
+          id: 3,
+          type: "truefalse",
+          audio: "Q3.mp3",
+          question: "Sam thinks that publicly correcting a relative's false post is the most responsible way to stop misinformation.",
+          correctAnswer: "False",
+          timeRange: { start: "00:01:54", end: "00:03:14" },
+          transcript: `You see a post from a relative sharing a news story. You know it's 100%false. You've checked the facts on reliable sites. Do you correct them publicly in the comments?
+
+Oh, this is a nuanced minefield. My instinct is to fight misinformation everywhere, but comment on your aunt's post saying, this is fake. That's a recipe for a family feud. It puts them on the defensive immediately.
+
+So, what's the ethical move? To say nothing and let the falsehood spread?
+
+No, I think you have a responsibility to act, but strategically. Send a private message. Say something like, Hi Aunt Jane, I saw your post. I actually read about this on the BBC website, and they have a different take. Here's the link if you're interested. You're providing facts, not a public attack.
+
+I like that approach.
+
+It's kinder and probably more effective. The ethical goal here is to stop false information. Not to win an argument or shame someone. Public shaming rarely changes minds. It just makes people more angry. Private, respectful correction is the level of diplomacy we need.`,
+          feedback: {
+            correct: "Correct. Sam supports private correction, not public correction.",
+            incorrect: "Not quite. Sam says a private message is the better and more effective response."
+          }
+        },
+        {
+          id: 4,
+          type: "truefalse",
+          audio: "Q4.mp3",
+          question: "Leo believes that using the 'mute' function on a co-worker is unethical because it is dishonest.",
+          correctAnswer: "False",
+          timeRange: { start: "00:03:40", end: "00:03:51" },
+          transcript: `This is the daily reality of social media, isn't it? I'm a big fan of the mute button. It's the ethical ghost. You don't tell them you've silenced them.`,
+          feedback: {
+            correct: "Correct. Leo actually supports muting and describes it positively.",
+            incorrect: "Not quite. Leo says he is a big fan of the mute button, so he does not think it is unethical."
+          }
+        },
+        {
+          id: 5,
+          type: "truefalse",
+          audio: "Q5.mp3",
+          question: "Sam believes social media should be for personal enjoyment, not for news or serious debate.",
+          correctAnswer: "True",
+          timeRange: { start: "00:04:31", end: "00:04:49" },
+          transcript: `In theory, yes, but my social media feed isn't my classroom, Leo. It's my leisure time. I get my diverse views from quality journalism, not from angry rants between cat videos. There is a difference between a thoughtful, opposing article,`,
+          feedback: {
+            correct: "Correct. Sam sees social media mainly as leisure space, and prefers journalism for serious viewpoints.",
+            incorrect: "Not quite. Sam says social media is his leisure time and that he gets serious viewpoints from journalism instead."
+          }
+        }
+      ]
+    };
+
+    const quizEl = document.getElementById("quiz");
+    const resultsEl = document.getElementById("results");
+    const scoreValueEl = document.getElementById("scoreValue");
+    const percentValueEl = document.getElementById("percentValue");
+    const summaryNoteEl = document.getElementById("summaryNote");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function renderQuiz() {
+      quizEl.innerHTML = listeningData.questions.map((q) => `
+        <section class="question-card" id="question-${q.id}">
+          <div class="question-header">
+            <div class="question-number">Question ${q.id}</div>
+          </div>
+
+          <p class="question-text">${escapeHtml(q.question)}</p>
+
+          <div class="options" role="radiogroup" aria-label="Question ${q.id}">
+            <label class="option-label">
+              <input type="radio" name="q${q.id}" value="True">
+              <span>True</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q${q.id}" value="False">
+              <span>False</span>
+            </label>
+          </div>
+
+          <div id="status-${q.id}"></div>
+          <div id="feedback-${q.id}" class="feedback"></div>
+
+          <div id="support-${q.id}" class="support-tools">
+            <h4>Review this question</h4>
+            <div class="audio-box">
+              <audio controls preload="none">
+                <source src="${encodeURI(q.audio)}" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+            <button class="toggle-btn" type="button" data-target="transcript-${q.id}">Show Transcript Clip</button>
+            <div id="transcript-${q.id}" class="transcript">
+              <strong>Transcript Clip</strong>
+              <div class="transcript-content">${escapeHtml(q.transcript)}</div>
+            </div>
+          </div>
+        </section>
+      `).join("");
+
+      bindTranscriptButtons();
+    }
+
+    function bindTranscriptButtons() {
+      document.querySelectorAll(".toggle-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const targetId = button.getAttribute("data-target");
+          const transcriptEl = document.getElementById(targetId);
+          const isOpen = transcriptEl.classList.toggle("show");
+          button.textContent = isOpen ? "Hide Transcript Clip" : "Show Transcript Clip";
+        });
+      });
+    }
+
+    function getSelectedAnswer(questionId) {
+      const selected = document.querySelector(`input[name="q${questionId}"]:checked`);
+      return selected ? selected.value : "";
+    }
+
+    function checkAnswers() {
+      let score = 0;
+
+      listeningData.questions.forEach((q) => {
+        const userAnswer = getSelectedAnswer(q.id);
+        const isCorrect = userAnswer === q.correctAnswer;
+
+        const feedbackEl = document.getElementById(`feedback-${q.id}`);
+        const supportEl = document.getElementById(`support-${q.id}`);
+        const statusEl = document.getElementById(`status-${q.id}`);
+
+        if (isCorrect) {
+          score++;
+          feedbackEl.className = "feedback correct";
+          feedbackEl.textContent = q.feedback.correct;
+          supportEl.classList.remove("show");
+          statusEl.innerHTML = `<span class="status-pill correct">Correct</span>`;
+        } else {
+          feedbackEl.className = "feedback incorrect";
+          feedbackEl.textContent = userAnswer
+            ? `${q.feedback.incorrect} Correct answer: ${q.correctAnswer}.`
+            : `No answer selected. Correct answer: ${q.correctAnswer}. ${q.feedback.incorrect}`;
+          supportEl.classList.add("show");
+          statusEl.innerHTML = `<span class="status-pill incorrect">Incorrect</span>`;
+        }
+      });
+
+      const total = listeningData.questions.length;
+      const percent = Math.round((score / total) * 100);
+
+      scoreValueEl.textContent = `${score} / ${total}`;
+      percentValueEl.textContent = `${percent}%`;
+      summaryNoteEl.textContent =
+        percent === 100
+          ? "Excellent work. You answered every question correctly."
+          : "Only incorrect answers show replay audio and the matching transcript clip.";
+
+      resultsEl.classList.add("show");
+      resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    submitBtn.addEventListener("click", checkAnswers);
+    renderQuiz();
+  </script>
+</body>
+</html>
